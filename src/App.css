@@ -1,5 +1,11 @@
+body{
+  font: Degular Demo;
+  background-color: 	/*hsl(220, 13%, 25%)*/rgb(255, 235, 205);
+}
 .App {
   text-align: center;
+  min-height: 100vh;
+  
 }
 
 .App-logo {
@@ -14,20 +20,61 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background: 	rgb(247, 243, 237);
+  margin: 8px 12px 8px 12px;
+  padding: 4px 8px;
+  border: 3px solid #000;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
-
+.header-nav-link{
+  padding: 0px 4px;
+}
+.video-box{
+  height: 400px;
+  border: 3px solid #000;
+  margin: 15px 30px 20px 30px;
+  background: 	rgb(247, 243, 237);
+  display: flex;
+}
 .App-link {
   color: #61dafb;
 }
+#sunmoon.day{
+  background-image: url("sunmoon-day.svg");
+}
 
+@media only screen and (max-width: 600px){
+#sunmoon{
+    background-size: cover;
+    margin-top: calc(-0.2 * calc(10vh + 48px));
+    margin-right: calc(-1 * 24px);
+    right: 0;
+}
+}
+#sunmoon {
+  width: 225px;
+  height: 225px;
+  position: absolute;
+  bottom: -64px;
+  right: -64px;
+  margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
+  /*margin-right: calc(2.5 * 64px);*/
+  border-radius: 50%;
+  overflow: hidden;
+}
+#sunmoon-face {
+  width: 88px;
+  height: 30px;
+  background-image: url("smiley.svg");
+  position: absolute;
+  top: 25%;
+  left: 19%;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +82,37 @@
   to {
     transform: rotate(360deg);
   }
+}
+.switch-darkmode{
+  float: left;
+  -webkit-appearance: none;
+  outline: none;
+  width: 44px;
+  height: 22px;
+  background-color: #85b6ff;
+  position: relative;
+  border-radius: 34px;
+  transition: background-color .90s;
+}
+.switch-darkmode:before{
+  content: "";
+  width: 22px;
+  height: 22px;
+  /*background-color: gold;*/
+  background-image: url("sunmoon-day-clean.svg");
+  background-size: cover;
+  border-radius: 50%;
+  position: absolute;
+  left: 2px;
+  top: 0px;
+  transition: all 0.9s;
+  box-shadow: 1px 1px 5px 0px rgb(179, 179, 179)
+}
+.switch-darkmode:checked{
+  background-color: rgb(24, 24, 94);
+}
+
+.switch-darkmode:checked:before{
+  transform: translate(100%);
+  background-image: url("sunmoon-night.svg");
 }
