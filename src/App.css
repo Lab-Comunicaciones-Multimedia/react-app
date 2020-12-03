@@ -35,9 +35,9 @@ body{
   padding: 0px 4px;
 }
 .video-box{
-  height: 400px;
+  height: 500px;
   border: 3px solid #000;
-  margin: 15px 30px 20px 30px;
+  margin: 64px 76px 20px 164px;
   background: 	rgb(247, 243, 237);
   display: flex;
 }
@@ -45,7 +45,7 @@ body{
   color: #61dafb;
 }
 #sunmoon.day{
-  background-image: url("sunmoon-day.svg");
+  background-image: url("icons/sunmoon-day.svg");
 }
 
 @media only screen and (max-width: 600px){
@@ -54,6 +54,12 @@ body{
     margin-top: calc(-0.2 * calc(10vh + 48px));
     margin-right: calc(-1 * 24px);
     right: 0;
+}
+#friend{
+  background-size: cover;
+  margin-top: calc(-0.2 * calc(10vh + 48px));
+  margin-right: calc(-1 * 24px);
+  right: 0;
 }
 }
 #sunmoon {
@@ -67,13 +73,34 @@ body{
   border-radius: 50%;
   overflow: hidden;
 }
+
 #sunmoon-face {
   width: 88px;
   height: 30px;
-  background-image: url("smiley.svg");
+  background-image: url("icons/smiley.svg");
   position: absolute;
   top: 25%;
   left: 19%;
+}
+#friend {
+  background-image: url("icons/purple-friend.svg");
+  width: 225px;
+  height: 225px;
+  position: absolute;
+  bottom: 400px;
+  right: 852px;
+  margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: -1;
+}
+#friend-face {
+  width: 88px;
+  height: 30px;
+  background-image: url("icons/smiley.svg");
+  position: absolute;
+  top: 12%;
+  left: 30%;
 }
 @keyframes App-logo-spin {
   from {
@@ -99,7 +126,7 @@ body{
   width: 22px;
   height: 22px;
   /*background-color: gold;*/
-  background-image: url("sunmoon-day-clean.svg");
+  background-image: url("icons/sunmoon-day-clean.svg");
   background-size: cover;
   border-radius: 50%;
   position: absolute;
@@ -114,5 +141,8 @@ body{
 
 .switch-darkmode:checked:before{
   transform: translate(100%);
-  background-image: url("sunmoon-night.svg");
+  background-image: url("icons/sunmoon-night.svg");
+}
+.thing{
+  color: #ca5fff;
 }

@@ -41,6 +41,13 @@ function SmileySun (){
     </div>
   );
 }
+function PurpleFriend (){
+  return(
+    <div id="friend">
+      <div id="friend-face"></div>
+    </div>
+  );
+}
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -53,6 +60,7 @@ class App extends React.Component {
     <div className="App">
       <Header mode={this.state.dark}/>
       <VideoBox/>
+      <PurpleFriend/>
       <SmileySun/>
     </div>
   );
