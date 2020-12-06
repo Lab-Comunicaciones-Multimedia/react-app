@@ -1,25 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive"; //for reading CSS variables and media queries
 //import logo from './logo.svg';
 import './App.css';
 
-const lightStyle = {
-  backgroundColor: "rgb(255, 235, 205)"
-};
-const darkStyle = {
-  backgroundColor: "midnightblue"
-};
+const DARK_CLASS = "dark";
+
 class Header extends React.Component{
   render(){
     return(
       <header className="App-header">
+        <div id="box">
+          <DarkModeToggle/>
+        </div>
+        <div id="box">
         <nav>
-          <label className="switch">
-              <input type="checkbox" className="switch-darkmode"/>
-              <span className="slider round"></span>
-          </label>
           <a className="header-nav-link">Home</a>
           <a className="header-nav-link" >About</a>
         </nav>
+        </div>
       </header>
     );
   };
@@ -28,20 +26,51 @@ class VideoBox extends React.Component{
 
   render(){
     return (
-      <div className="video-box">
+      <div id="box" className="video-box">
 
       </div>
     );
   };
 }
-function SmileySun (){
+const DarkModeToggle = () => {
+
+  // Read 'prefers-color-scheme' media query (user preference) and apply whenever it changes (setIsDark(prefersDark))
+  const systemPrefersDark = useMediaQuery({
+      query: '(prefers-color-scheme: dark)'
+    }, 
+    undefined, 
+    prefersDark => setIsDark(prefersDark)
+  );
+
+  // Hook for setting dark/light state
+  const [isDark, setIsDark] = useState(systemPrefersDark);
+
+  useEffect(() => {
+    if(isDark){
+      document.documentElement.classList.add(DARK_CLASS)
+    }else{
+      document.documentElement.classList.remove(DARK_CLASS)
+    }
+  },[isDark]);
+
+  return(
+    <label className="switch">
+      <input type="checkbox" className="switch-darkmode" checked={isDark} 
+      onChange={event => setIsDark(event.target.checked)}
+      />
+      <span className="slider round"></span>
+    </label>
+  );
+}
+
+const SmileySun = () => {
   return(
     <div id="sunmoon" className="day">
       <div id="sunmoon-face"></div>
     </div>
   );
 }
-function PurpleFriend (){
+const PurpleFriend = () => {
   return(
     <div id="friend">
       <div id="friend-face"></div>
@@ -59,8 +88,10 @@ class App extends React.Component {
     return (
     <div className="App">
       <Header mode={this.state.dark}/>
-      <VideoBox/>
-      <PurpleFriend/>
+      <div style={{position: "relative"}}>
+        <VideoBox/>
+        <PurpleFriend/>
+      </div>
       <SmileySun/>
     </div>
   );
