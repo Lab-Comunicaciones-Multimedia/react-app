@@ -17,7 +17,7 @@ class App extends React.Component {
     <div className="App">
       <Header/>
       <div className="App-container">
-        {/*<SideBar></SideBar>*/}
+        <div id="sidebar"><SideBar/></div>
         <div id="content">
           <PurpleFriend/>
           <VideoBox/>

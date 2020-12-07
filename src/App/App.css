@@ -23,7 +23,19 @@ body{
 }
 .App-container{
   display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  grid-template-areas: "sidebar content content content";
 
+}
+#sidebar{
+  /*background-color: cadetblue;*/
+  grid-area: sidebar;
+  justify-self: center;
+  padding-bottom: 20px;
+}
+#content{
+  /*background-color: rgb(74, 122, 124);*/
+  grid-area: content;
 }
 .App-logo {
   height: 40vmin;
