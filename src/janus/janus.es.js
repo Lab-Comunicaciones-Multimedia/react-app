@@ -31,6 +31,7 @@
  */
 
 // List of sessions
+import adapter from 'webrtc-adapter';
 Janus.sessions = {};
 
 Janus.isExtensionEnabled = function() {
