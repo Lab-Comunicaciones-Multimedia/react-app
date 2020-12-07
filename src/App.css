@@ -1,10 +1,14 @@
 html{
   --primaryBackgroundColor: rgb(255, 235, 205);
   --sunmoonBackgroundPicture: url("icons/sunmoon-day.svg");
+  --primaryTextColor: black;
+  --divBackgroundColor:rgb(247, 243, 237);
 }
 html.dark{
-  --primaryBackgroundColor: rgb(33, 33, 91);
+  --primaryBackgroundColor: #1d2d50;
   --sunmoonBackgroundPicture: url("icons/sunmoon-night.svg");
+  --primaryTextColor: #110F06;
+  --divBackgroundColor:#ececec;
 }
 body{
   font: Degular Demo;
@@ -25,7 +29,7 @@ body{
 
 div#box{
   border: 2px solid #000;
-  background: 	rgb(247, 243, 237);
+  background: var(--divBackgroundColor);
 }
 
 .App-header {
@@ -34,7 +38,7 @@ div#box{
   display: flex;
   justify-content: space-between;
   font-size: calc(10px + 2vmin);
-  color: black;
+  color: var(--primaryTextColor);
 }
 .header-nav-link{
   margin: 8px 12px 8px 12px;
