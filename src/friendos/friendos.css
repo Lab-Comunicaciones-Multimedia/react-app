@@ -43,7 +43,9 @@ html{
     background-image: url("/src/icons/purple-friend.svg");
     width: 225px;
     height: 225px;
-    left: 228px;
+    left: 0px;
+    right: 100%;
+    bottom: 28px;
     position: relative;
     margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
     border-radius: 50%;
