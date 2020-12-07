@@ -2,6 +2,12 @@ import React from "react";
 import './VideoBox.css';
 
 class VideoBox extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+    };
+  }
 
     render(){
       return (
