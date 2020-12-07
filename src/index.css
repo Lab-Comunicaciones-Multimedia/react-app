@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+div#box{
+  border: 2px solid #000;
+  background: var(--divBackgroundColor);
+}

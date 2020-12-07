@@ -1,0 +1,60 @@
+html{
+    --sunmoonBackgroundPicture: url("/src/icons/sunmoon-day.svg");
+}
+#sunmoon.day{
+    background-image: var(--sunmoonBackgroundPicture);
+  }
+  
+  @media only screen and (max-width: 600px){
+  #sunmoon{
+      background-size: cover;
+      margin-top: calc(-0.2 * calc(10vh + 48px));
+      margin-right: calc(-1 * 24px);
+      right: 0;
+  }
+  #friend{
+    background-size: cover;
+    margin-top: calc(-0.2 * calc(10vh + 48px));
+    margin-right: calc(-1 * 24px);
+    right: 0;
+  }
+  }
+  #sunmoon {
+    width: 225px;
+    height: 225px;
+    position: absolute;
+    bottom: -64px;
+    right: -64px;
+    margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
+    /*margin-right: calc(2.5 * 64px);*/
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
+  #sunmoon-face {
+    width: 88px;
+    height: 30px;
+    background-image: url("/src/icons/smiley.svg");
+    position: absolute;
+    top: 25%;
+    left: 19%;
+  }
+  #friend {
+    background-image: url("/src/icons/purple-friend.svg");
+    width: 225px;
+    height: 225px;
+    left: 228px;
+    position: relative;
+    margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: -1;
+  }
+  #friend-face {
+    width: 88px;
+    height: 30px;
+    background-image: url("/src/icons/smiley.svg");
+    position: absolute;
+    top: 12%;
+    left: 30%;
+  }

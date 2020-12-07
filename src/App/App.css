@@ -1,0 +1,49 @@
+html{
+  --primaryBackgroundColor: rgb(255, 235, 205);
+  --sunmoonBackgroundPicture: url("/src/icons/sunmoon-day.svg");
+  --primaryTextColor: black;
+  --divBackgroundColor:rgb(247, 243, 237);
+}
+html.dark{
+  --primaryBackgroundColor: #1d2d50;
+  --sunmoonBackgroundPicture: url("/src/icons/sunmoon-night.svg");
+  --primaryTextColor: #110F06;
+  --divBackgroundColor:#ececec;
+}
+body{
+  font: Degular Demo;
+  background-color: 	var(--primaryBackgroundColor);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.App {
+  text-align: center;
+  min-height: 100vh;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+.video-box{
+  height: 500px;
+  margin: 64px 76px 20px 164px;
+  bottom: 250px;
+  position: relative;
+}
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.thing{
+  color: #ca5fffd5;
+}

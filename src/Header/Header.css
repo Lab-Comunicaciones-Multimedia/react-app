@@ -1,0 +1,46 @@
+  
+  .App-header {
+    margin: 8px 12px 8px 12px;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: calc(10px + 2vmin);
+    color: var(--primaryTextColor);
+  }
+  .header-nav-link{
+    margin: 8px 12px 8px 12px;
+    padding: 0px 4px;
+  }
+
+  .switch-darkmode{
+    float: left;
+    -webkit-appearance: none;
+    outline: none;
+    width: 44px;
+    height: 22px;
+    background-color: #97b2da;
+    position: relative;
+    border-radius: 34px;
+    transition: background-color .90s;
+  }
+  .switch-darkmode:before{
+    content: "";
+    width: 22px;
+    height: 22px;
+    background-image: url("/src/icons/sunmoon-day-clean.svg");
+    background-size: cover;
+    border-radius: 50%;
+    position: absolute;
+    left: 2px;
+    top: 0px;
+    transition: all 0.9s;
+    box-shadow: 1px 1px 5px 0px rgb(179, 179, 179)
+  }
+  .switch-darkmode:checked{
+    background-color: rgb(24, 24, 94);
+  }
+  
+  .switch-darkmode:checked:before{
+    transform: translate(100%);
+    background-image: url("/src/icons/sunmoon-night.svg");
+  }
