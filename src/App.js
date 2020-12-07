@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive"; //for reading CSS variables and media queries
+//for reading CSS variables and media queries
+import { useMediaQuery } from "react-responsive";
 //import logo from './logo.svg';
 import './App.css';
 
@@ -9,10 +10,10 @@ class Header extends React.Component{
   render(){
     return(
       <header className="App-header">
-        <div id="box">
+        <div id="box" style={{border: '2px solid #000'}}>
           <DarkModeToggle/>
         </div>
-        <div id="box">
+        <div id="box" className="header-links">
         <nav>
           <a className="header-nav-link">Home</a>
           <a className="header-nav-link" >About</a>
@@ -26,8 +27,15 @@ class VideoBox extends React.Component{
 
   render(){
     return (
-      <div id="box" className="video-box">
-
+        <div id="box" className="video-box">
+        </div>
+    );
+  };
+}
+class SideBar extends React.Component{
+  render(){
+    return(
+      <div id='box' className="sidebar">
       </div>
     );
   };
@@ -81,16 +89,18 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      dark: false
     };
   }
   render(){
     return (
     <div className="App">
-      <Header mode={this.state.dark}/>
-      <div style={{position: "relative"}}>
-        <VideoBox/>
-        <PurpleFriend/>
+      <Header/>
+      <div>
+        {/*<SideBar></SideBar>*/}
+        <div id="content">
+          <PurpleFriend/>
+          <VideoBox/>
+        </div>
       </div>
       <SmileySun/>
     </div>

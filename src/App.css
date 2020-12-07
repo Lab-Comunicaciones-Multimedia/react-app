@@ -9,6 +9,9 @@ html.dark{
 body{
   font: Degular Demo;
   background-color: 	var(--primaryBackgroundColor);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 .App {
   text-align: center;
@@ -20,13 +23,8 @@ body{
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 div#box{
-  border: 3px solid #000;
+  border: 2px solid #000;
   background: 	rgb(247, 243, 237);
 }
 
@@ -34,9 +32,7 @@ div#box{
   margin: 8px 12px 8px 12px;
   padding: 4px 8px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: left;
+  justify-content: space-between;
   font-size: calc(10px + 2vmin);
   color: black;
 }
@@ -44,10 +40,15 @@ div#box{
   margin: 8px 12px 8px 12px;
   padding: 0px 4px;
 }
+.sidebar{
+  width: 10vw;
+  height: 500px;
+}
 .video-box{
   height: 500px;
   margin: 64px 76px 20px 164px;
-  display: flex;
+  bottom: 250px;
+  position: relative;
 }
 .App-link {
   color: #61dafb;
@@ -94,9 +95,8 @@ div#box{
   background-image: url("icons/purple-friend.svg");
   width: 225px;
   height: 225px;
-  position: absolute;
-  bottom: 400px;
-  right: 852px;
+  left: 228px;
+  position: relative;
   margin-top: calc(2 * 48px - 0.5 * calc(10vh + 48px));
   border-radius: 50%;
   overflow: hidden;
@@ -124,7 +124,7 @@ div#box{
   outline: none;
   width: 44px;
   height: 22px;
-  background-color: #85b6ff;
+  background-color: #97b2da;
   position: relative;
   border-radius: 34px;
   transition: background-color .90s;
@@ -152,5 +152,5 @@ div#box{
   background-image: url("icons/sunmoon-night.svg");
 }
 .thing{
-  color: #ca5fff;
+  color: #ca5fffd5;
 }
