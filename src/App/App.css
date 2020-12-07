@@ -21,17 +21,15 @@ body{
   text-align: center;
   min-height: 100vh;
 }
+.App-container{
+  display: grid;
 
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-.video-box{
-  height: 500px;
-  margin: 64px 76px 20px 164px;
-  bottom: 250px;
-  position: relative;
-}
+
 .App-link {
   color: #61dafb;
 }

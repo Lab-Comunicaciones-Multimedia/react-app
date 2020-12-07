@@ -1,20 +1,10 @@
 import React from "react";
 //import logo from './logo.svg';
 import './App.css';
-import Header from '../Header/Header'
-import SideBar from '../SideBar/SideBar'
+import Header from '../Header/Header';
+import SideBar from '../SideBar/SideBar';
+import VideoBox from '../VideoBox/VideoBox';
 import {SmileySun, PurpleFriend} from '../friendos/friendos.js';
-
-
-class VideoBox extends React.Component{
-
-  render(){
-    return (
-        <div id="box" className="video-box">
-        </div>
-    );
-  };
-}
 
 class App extends React.Component {
   constructor(props){
@@ -26,7 +16,7 @@ class App extends React.Component {
     return (
     <div className="App">
       <Header/>
-      <div>
+      <div className="App-container">
         {/*<SideBar></SideBar>*/}
         <div id="content">
           <PurpleFriend/>
