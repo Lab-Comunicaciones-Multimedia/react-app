@@ -6,6 +6,18 @@ import SideBar from '../SideBar/SideBar';
 import VideoBox from '../VideoBox/VideoBox';
 import {SmileySun, PurpleFriend} from '../friendos/friendos.js';
 
+import { v1 as uuidv1 } from 'uuid';
+
+//const server = "http://localhost:8088/janus";
+
+//const params = new URLSearchParams(window.location.href);
+
+/*let user_id = params.get(`user_id`);
+
+if (!user_id) {
+	user_id = uuidv1();
+}*/
+
 class App extends React.Component {
   constructor(props){
     super(props);

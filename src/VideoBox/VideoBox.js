@@ -1,5 +1,8 @@
 import React from "react";
+//import { JanusVideoRoom } from 'react-videoroom-janus';
 import './VideoBox.css';
+import './EchoTest'
+import EchoTest from "./EchoTest";
 
 class VideoBox extends React.Component{
   constructor(props) {
@@ -12,6 +15,7 @@ class VideoBox extends React.Component{
     render(){
       return (
           <div id="box" className="video-box">
+          <EchoTest/>
           </div>
       );
     };
