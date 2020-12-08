@@ -64,7 +64,7 @@ class VideoRoomTest extends Component {
 
     componentDidMount() {
         Janus.init({
-            debug: ["debug","log"], 
+            debug: "all", 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             dependencies: Janus.useDefaultDependencies(),
             callback: function() {
