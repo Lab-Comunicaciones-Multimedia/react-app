@@ -37,7 +37,7 @@ class VideoRoomTest extends Component {
             this.remoteVideo=element;
         }*/
 
-        this.server = "http://localhost:8088/janus";
+        this.server = ["ws://localhost:8188","http://localhost:8088/janus"];
         this.opaqueId = "videoroomtest-"+Janus.randomString(12);
         this.echotest = null;
         this.janus=null;
@@ -63,7 +63,11 @@ class VideoRoomTest extends Component {
     }
 
     componentDidMount() {
-        Janus.init({debug: "all", callback: function() {
+        Janus.init({
+            debug: ["debug","log"], 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            dependencies: Janus.useDefaultDependencies(),
+            callback: function() {
 
             }});
     }
@@ -98,15 +102,15 @@ class VideoRoomTest extends Component {
 
 
     handleStart(){
-        if(this.bStartEchoTest){
-            clearInterval(this.bitrateTimer);
-            this.janus.destroy();
-            this.bitrateTimer=null;
-            this.janus=null;
-            this.bStartEchoTest=false;
-            this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
-            return;
-        }
+        // if(this.bStartEchoTest){
+        //     clearInterval(this.bitrateTimer);
+        //     this.janus.destroy();
+        //     this.bitrateTimer=null;
+        //     this.janus=null;
+        //     this.bStartEchoTest=false;
+        //     this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
+        //     return;
+        // }
 
         this.bStartEchoTest=true;
         this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
@@ -141,30 +145,30 @@ class VideoRoomTest extends Component {
                                 Janus.log("  -- This is a publisher/manager");
                                 // Prepare the username registration
                                 that.registerUsername(`user-${Math.floor(1000000*Math.random())}`);
-                                Janus.log("Username: " + that.username + "\nmyroom: "+that.myroom);
+                                Janus.log("Username: " + that.myusername + "\nmyroom: "+that.myroom);
                                 // Negotiate WebRTC
-                                var body = { "audio": true, "video": true };
-                                Janus.debug("Sending message (" + JSON.stringify(body) + ")");
-                                that.echotest.send({"message": body});
-                                Janus.debug("Trying a createOffer too (audio/video sendrecv)");
-                                that.echotest.createOffer(
-                                    {
-                                        // No media provided: by default, it's sendrecv for audio and video
-                                        media: { data: true },	// Let's negotiate data channels as well
-                                        // If you want to test simulcasting (Chrome and Firefox only), then
-                                        // pass a ?simulcast=true when opening this demo page: it will turn
-                                        // the following 'simulcast' property to pass to janus.js to true
-                                        simulcast: false,
-                                        success: function(jsep) {
-                                            Janus.debug("Got SDP!");
-                                            Janus.debug(jsep);
-                                            that.echotest.send({"message": body, "jsep": jsep});
-                                        },
-                                        error: function(error) {
-                                            Janus.error("WebRTC error:", error);
-                                            alert("WebRTC error... " + JSON.stringify(error));
-                                        }
-                                    });
+                                // var body = { "audio": true, "video": true };
+                                // Janus.debug("Sending message (" + JSON.stringify(body) + ")");
+                                // that.echotest.send({"message": body});
+                                // Janus.debug("Trying a createOffer too (audio/video sendrecv)");
+                                // that.echotest.createOffer(
+                                //     {
+                                //         // No media provided: by default, it's sendrecv for audio and video
+                                //         media: { data: true },	// Let's negotiate data channels as well
+                                //         // If you want to test simulcasting (Chrome and Firefox only), then
+                                //         // pass a ?simulcast=true when opening this demo page: it will turn
+                                //         // the following 'simulcast' property to pass to janus.js to true
+                                //         simulcast: false,
+                                //         success: function(jsep) {
+                                //             Janus.debug("Got SDP!");
+                                //             Janus.debug(jsep);
+                                //             that.echotest.send({"message": body, "jsep": jsep});
+                                //         },
+                                //         error: function(error) {
+                                //             Janus.error("WebRTC error:", error);
+                                //             alert("WebRTC error... " + JSON.stringify(error));
+                                //         }
+                                //     });
                             },
                             error: function(error) {
                                 console.error("  -- Error attaching plugin...", error);
@@ -172,13 +176,13 @@ class VideoRoomTest extends Component {
                             },
                             iceState: function(state) {
                                 Janus.log("ICE state changed to " + state);
-                                if(state=='completed'){
+                                if(state == 'completed'){
                                     if(that.reconnectTimer){
                                         clearInterval(that.reconnectTimer);
                                         that.reconnectTimer=null;
                                     }
                                 }
-                                if(state=='failed'){
+                                if(state == 'failed'){
                                     that.reconnectTimer = setInterval(function() {
                                         that.bStartEchoTest=false;
                                         that.handleStart();
@@ -197,6 +201,7 @@ class VideoRoomTest extends Component {
                             },
                             onmessage: function(msg, jsep) {
                                 Janus.debug(" ::: Got a message :::");
+                                console.log(msg);
                                 let event = msg["videoroom"];
                                 Janus.debug("Event: " + event);
                                 if(event) {
@@ -206,17 +211,19 @@ class VideoRoomTest extends Component {
                                         that.mypvtid = msg["private_id"];
                                         Janus.log("Successfully joined room " + msg["room"] + " with ID " + that.myid);
     
+                                        console.log("BEFORE");
                                         that.publishOwnFeed(true);
+                                        console.log("AFTER");
     
                                         // Any new feed to attach to?
                                         if(msg["publishers"]) {
-                                            var list = msg["publishers"];
+                                            let list = msg["publishers"];
                                             Janus.debug("Got a list of available publishers/feeds:", list);
-                                            for(var f in list) {
-                                                var id = list[f]["id"];
-                                                var display = list[f]["display"];
-                                                var audio = list[f]["audio_codec"];
-                                                var video = list[f]["video_codec"];
+                                            for(let f in list) {
+                                                let id = list[f]["id"];
+                                                let display = list[f]["display"];
+                                                let audio = list[f]["audio_codec"];
+                                                let video = list[f]["video_codec"];
                                                 Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
                                                 that.newRemoteFeed(id, display, audio, video);
                                             }
@@ -227,13 +234,13 @@ class VideoRoomTest extends Component {
                                     } else if(event === "event") {
                                         // Any new feed to attach to?
                                         if(msg["publishers"]) {
-                                            var list = msg["publishers"];
+                                            let list = msg["publishers"];
                                             Janus.debug("Got a list of available publishers/feeds:", list);
-                                            for(var f in list) {
-                                                var id = list[f]["id"];
-                                                var display = list[f]["display"];
-                                                var audio = list[f]["audio_codec"];
-                                                var video = list[f]["video_codec"];
+                                            for(let f in list) {
+                                                let id = list[f]["id"];
+                                                let display = list[f]["display"];
+                                                let audio = list[f]["audio_codec"];
+                                                let video = list[f]["video_codec"];
                                                 Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
                                                 that.newRemoteFeed(id, display, audio, video);
                                             }
@@ -434,12 +441,14 @@ class VideoRoomTest extends Component {
     }
     
     newRemoteFeed(id, display, audio, video) {
+        console.log("newRemoteFeed");
         // A new feed has been published, create a new plugin handle and attach to it as a subscriber
         var remoteFeed = null;
+        let that = this;
         this.janus.attach(
             {
                 plugin: "janus.plugin.videoroom",
-                opaqueId: this.opaqueId,
+                opaqueId: that.opaqueId,
                 success: function(pluginHandle) {
                     remoteFeed = pluginHandle;
                     // remoteFeed.simulcastStarted = false;
@@ -448,10 +457,10 @@ class VideoRoomTest extends Component {
                     // We wait for the plugin to send us an offer
                     var subscribe = {
                         request: "join",
-                        room: this.myroom,
+                        room: that.myroom,
                         ptype: "subscriber",
                         feed: id,
-                        private_id: this.mypvtid
+                        private_id: that.mypvtid
                     };
                     // In case you don't want to receive audio, video or data, even if the
                     // publisher is sending them, set the 'offer_audio', 'offer_video' or
@@ -484,8 +493,8 @@ class VideoRoomTest extends Component {
                         if(event === "attached") {
                             // Subscriber created and attached
                             for(var i=1;i<6;i++) {
-                                if(!this.feeds[i]) {
-                                    this.feeds[i] = remoteFeed;
+                                if(!that.feeds[i]) {
+                                    that.feeds[i] = remoteFeed;
                                     remoteFeed.rfindex = i;
                                     break;
                                 }
@@ -526,14 +535,13 @@ class VideoRoomTest extends Component {
                             // (obviously only works if the publisher offered them in the first place)
                             media: {
                                 audioSend: false,
-                                videoSend: false,
-                                data: true
+                                videoSend: false
                             },	// We want recvonly audio/video, and data channel
                             success: function(jsep) {
                                 Janus.debug("Got SDP!", jsep);
                                 var body = {
                                     request: "start",
-                                    room: this.myroom
+                                    room: that.myroom
                                 };
                                 remoteFeed.send({
                                     message: body,
@@ -562,12 +570,15 @@ class VideoRoomTest extends Component {
                     if(!remoteVideo) {
                         remoteVideo = document.createElement("video");
                         remoteVideo.id = `remote-${remoteFeed.rfindex}`;
-                        document.body.appendChild(remoteVideo);
+                        document.getElementById("videocall").appendChild(remoteVideo);
                         remoteVideo.load();
                         remoteVideo.autoplay = true;
+                        remoteVideo.style = styles.video;
                     }
                     
                     Janus.attachMediaStream(remoteVideo, stream);
+
+                    console.log("DOOOOOOOOOOOOOOOOONEEEEEEEEEEEEEEEE")
                     
                 },
                 ondata: function(data) {
@@ -587,9 +598,9 @@ class VideoRoomTest extends Component {
                 <Grid container xs={12} spacing={6} justify="flex-end"  alignItems="flex-end" direction="row">
                     <Grid item xs={6} >
                         {/*<Card key='1' style={styles.card}>*/}
-                        <div class="videocall">
+                        <div id="videocall">
                             <video style={styles.video} ref={this.localVideo} id="localVideo" autoPlay="true"/>
-                            <video style={styles.video} ref={this.remoteVideo} id="remoteVideo" autoPlay="true"/>
+                            {/* <video style={styles.video} ref={this.remoteVideo} id="remoteVideo" autoPlay="true"/> */}
                             {
                                 // stuff from echotest
                                 

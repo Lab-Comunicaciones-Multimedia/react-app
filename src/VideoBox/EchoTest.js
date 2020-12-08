@@ -155,13 +155,13 @@ class EchoTest extends Component {
                             },
                             iceState: function(state) {
                                 Janus.log("ICE state changed to " + state);
-                                if(state=='completed'){
+                                if(state === 'completed'){
                                     if(that.reconnectTimer){
                                         clearInterval(that.reconnectTimer);
                                         that.reconnectTimer=null;
                                     }
                                 }
-                                if(state=='failed'){
+                                if(state === 'failed'){
                                     that.reconnectTimer = setInterval(function() {
                                         that.bStartEchoTest=false;
                                         that.handleStart();
