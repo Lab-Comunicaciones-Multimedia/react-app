@@ -3,6 +3,7 @@ import React from "react";
 import './VideoBox.css';
 import './EchoTest'
 import EchoTest from "./EchoTest";
+import VideoRoomTest from "./VideoRoomTest";
 
 class VideoBox extends React.Component{
   constructor(props) {
@@ -15,7 +16,8 @@ class VideoBox extends React.Component{
     render(){
       return (
           <div id="box" className="video-box">
-          <EchoTest/>
+          {/*<EchoTest/>*/}
+          <VideoRoomTest/>
           </div>
       );
     };
