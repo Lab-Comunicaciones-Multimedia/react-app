@@ -24,7 +24,8 @@ class ChatRoomTest extends Component {
             audioEnable:true,
             bitrateValue:100,
             bStartEchoTestButton:false,
-            hasTextRoom: false
+            hasTextRoom: false,
+            hasSharedVideo: false
         }
 
         // create a ref to store the video DOM element
@@ -59,9 +60,14 @@ class ChatRoomTest extends Component {
 
         this.handleStart=this.handleStart.bind(this);
         this.sendMessage=this.sendMessage.bind(this);
+        this.enviarPaquete=this.enviarPaquete.bind(this);
+        // this.initSharedVideo=this.initSharedVideo.bind(this);
+
+        this.sharedVideo = null;
     }
 
     componentDidMount() {
+        // Initialize Janus
         Janus.init({
             debug: "all", 
             // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -72,6 +78,7 @@ class ChatRoomTest extends Component {
     }
 
     componentWillUnmount(){
+        window.removeEventListener('load',this.initSharedVideo);
         if(this.bitrateTimer&&this.janus){
             if(this.reconnectTimer){
                 clearInterval(this.reconnectTimer);
@@ -93,6 +100,13 @@ class ChatRoomTest extends Component {
         //     this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
         //     return;
         // }
+
+        // this.tiempo = 0;
+        // this.sharedVideo = document.getElementById("sharedVideo");
+        
+        // this.sharedVideo.addEventListener("seeked", this.enviarPaquete);
+        // this.sharedVideo.addEventListener("play", this.enviarPaquete);
+        // this.sharedVideo.addEventListener("pause", this.enviarPaquete);
 
         this.bStartEchoTest=true;
         this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
@@ -137,13 +151,13 @@ class ChatRoomTest extends Component {
                             },
                             iceState: function(state) {
                                 Janus.log("ICE state changed to " + state);
-                                if(state == 'completed'){
+                                if(state === 'completed'){
                                     if(that.reconnectTimer){
                                         clearInterval(that.reconnectTimer);
                                         that.reconnectTimer=null;
                                     }
                                 }
-                                if(state == 'failed'){
+                                if(state === 'failed'){
                                     that.reconnectTimer = setInterval(function() {
                                         that.bStartEchoTest=false;
                                         that.handleStart();
@@ -200,6 +214,44 @@ class ChatRoomTest extends Component {
                             },
                             ondata: function(data) {
                                 Janus.debug("We got data from the DataChannel!", data);
+
+                                let json = JSON.parse(data);
+
+                                let what = json["textroom"];
+                                let sendingUser = json["from"];
+
+                                if(what === "message") {
+                                    let receivedData = JSON.parse(json["text"]);
+                                    let type = receivedData["type"];
+                                    let content = receivedData["content"];
+
+                                    if(type === "message") {
+                                        // MESSAGE RECEIVED
+                                        let chat = document.getElementById("chat");
+                                        let chatMessage = document.createElement("p");
+                                        chatMessage.innerHTML = `${sendingUser}: ${content}`;
+                                        chat.appendChild(chatMessage);
+                                    } else if(type === "video") {
+                                        // VIDEO INFO RECEIVED
+                                        let url = content["url"];
+                                        let time = content["time"];
+                                        let isPlaying = content["isPlaying"];
+                                        let sharedVideo = document.getElementById("sharedVideo");
+
+                                        if(url) {
+                                            sharedVideo.firstChild.src = content["url"];
+                                            that.setState({
+                                                hasSharedVideo: true
+                                            })
+                                        } else {
+                                            that.procesarPaqueteRecibido({
+                                                time: time,
+                                                isPlaying: isPlaying
+                                            })
+                                        }
+                                    }
+                                }
+
                                 //~ $('#datarecv').val(data);
                                 // var json = JSON.parse(data);
                                 // var transaction = json["transaction"];
@@ -326,13 +378,19 @@ class ChatRoomTest extends Component {
     sendMessage() {
         let inputBox = document.getElementById("messageBox");
         if(inputBox) {
-            let data = inputBox.value;
+            let inputVal = inputBox.value;
             if(!this.state.hasTextRoom)
                 return;
-            if(data === "") {
+            if(inputVal === "") {
                 alert('Insert a message to send on the DataChannel');
                 return;
             }
+
+            let data = {
+                content: inputVal,
+                type: "message"
+            }
+
             var message = {
                 textroom: "message",
                 transaction: this.randomString(12),
@@ -364,13 +422,118 @@ class ChatRoomTest extends Component {
         return randomString;
     }
 
+    ////////////////////////////////
+    // Visualización colaborativa //
+    ////////////////////////////////
+    updateTime(t, isPlaying)	{
+		this.tiempo = t;
+		this.updateVideo(isPlaying);
+	}
+
+	updateVideo(isPlaying) {
+        let sharedVideo = document.getElementById("sharedVideo");
+
+        if(sharedVideo.currentTime !== this.tiempo) {
+            sharedVideo.currentTime = this.tiempo;
+        }
+        
+        if(isPlaying === sharedVideo.paused) {
+            if(isPlaying) {
+                sharedVideo.play().then().catch(err => console.log(err));
+            } else {
+                sharedVideo.pause();
+            }
+        }
+
+	}
+
+	getTime()	{
+		return document.getElementById("sharedVideo").currentTime;
+	}
+	
+
+	enviarPaquete()	{
+		let datosVisualizacion = {
+			time : this.getTime(),
+			isPlaying: !document.getElementById("sharedVideo").paused
+		};
+
+		if(!this.state.hasTextRoom)
+                return;
+
+        let data = {
+            content: datosVisualizacion,
+            type: "video"
+        }
+
+        var message = {
+            textroom: "message",
+            transaction: this.randomString(12),
+            room: this.myroom,
+            text: JSON.stringify(data)
+        };
+        // Note: messages are always acknowledged by default. This means that you'll
+        // always receive a confirmation back that the message has been received by the
+        // server and forwarded to the recipients. If you do not want this to happen,
+        // just add an ack:false property to the message above, and server won't send
+        // you a response (meaning you just have to hope it succeeded).
+        this.echotest.data({
+            text: JSON.stringify(message),
+            error: function(reason) { console.error(reason); },
+            success: function() {
+                console.log("MESSAGE SENT", message);
+            }
+        });
+    }
+
+    cambiarVideo(videoUrl) {
+        let datosVideo = {
+            url: videoUrl
+        }
+
+		if(!this.state.hasTextRoom)
+                return;
+
+        let data = {
+            content: datosVideo,
+            type: "video"
+        }
+
+        var message = {
+            textroom: "message",
+            transaction: this.randomString(12),
+            room: this.myroom,
+            text: JSON.stringify(data)
+        };
+        // Note: messages are always acknowledged by default. This means that you'll
+        // always receive a confirmation back that the message has been received by the
+        // server and forwarded to the recipients. If you do not want this to happen,
+        // just add an ack:false property to the message above, and server won't send
+        // you a response (meaning you just have to hope it succeeded).
+        this.echotest.data({
+            text: JSON.stringify(message),
+            error: function(reason) { console.error(reason); },
+            success: function() {
+                console.log("MESSAGE SENT", message);
+            }
+        });
+    }
+
+	procesarPaqueteRecibido(paquete)	{
+		this.updateTime(paquete.time, paquete.isPlaying);
+    }
+
     render() {
         return (
             <div>
                 {this.state.hasTextRoom ? 
                     <Fragment>
-                        <input type="text" id="messageBox"></input>
+                        <input type="text" id="messageBox" style={{width: "100%"}}></input>
                         <button onClick={this.sendMessage}>Send</button>
+                        <div id="chat" style={{width: "100%", height: "100%", "overflow-y": "scroll"}}></div>
+                        <video width="320" height="240" controls id="sharedVideo" onSeeked={this.enviarPaquete} onPlay={this.enviarPaquete} onPause={this.enviarPaquete}>
+                            <source src="test.mp4" type="video/mp4"/>
+                        </video>
                     </Fragment>
                  : <button onClick={this.handleStart}>Start</button>}
             </div>
