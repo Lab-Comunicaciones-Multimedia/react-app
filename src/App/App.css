@@ -15,7 +15,7 @@ body{
   background-color: 	var(--primaryBackgroundColor);
   width: 100vw;
   height: 100vh;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 .App {
   text-align: center;
@@ -56,4 +56,5 @@ body{
 }
 .thing{
   color: #ca5fffd5;
+  color: rgb(240, 202, 152);
 }
