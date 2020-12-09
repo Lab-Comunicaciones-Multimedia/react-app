@@ -12,7 +12,7 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import {VideoIcon,VideoOffIcon,AudioIcon,AudioOffIcon} from '../img/svgIcons'
 import NativeSelect from '@material-ui/core/NativeSelect';
-import { ButtonGroup } from '@material-ui/core';
+import { ButtonGroup, Hidden } from '@material-ui/core';
 
 class VideoRoomTest extends Component {
 
@@ -595,9 +595,11 @@ class VideoRoomTest extends Component {
                     if(!remoteVideo) {
                         that.setState({hasRemoteVideo: true, numberOfRemotes: that.state.numberOfRemotes + 1});
                         
+                        let divId = that.state.numberOfRemotes >1 ? 'remote2' :'remote1' ;
                         remoteVideo = document.createElement("video");
                         remoteVideo.id = `remote-${remoteFeed.rfindex}`;
-                        document.getElementById("videocall").appendChild(remoteVideo);
+                        remoteVideo.style = styles.video;
+                        document.getElementById(divId).appendChild(remoteVideo);
                         remoteVideo.load();
                         remoteVideo.autoplay = true;
 
@@ -606,7 +608,7 @@ class VideoRoomTest extends Component {
                             remotePeerIds: that.state.remotePeerIds.concat(id), 
                             remotePeerStreams: that.state.remotePeerStreams.concat(stream)
                         });
-                        //remoteVideo.style = styles.video;
+                        
                     }
                     
                     Janus.attachMediaStream(remoteVideo, stream);
@@ -659,12 +661,14 @@ class VideoRoomTest extends Component {
                         <div id="videocall" style={{
                             display: 'grid', 
                             height: 488, 
-                            gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))',
-                            }/*{flex:1, height: 488}*/
+                            gridTemplateColumns: '1fr 1fr',
+                            }/*{flex:1, height: 488} gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))'*/
                             }>
-                            <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
+                            <div id='remote1' ></div>
+                            <div id='remote2'></div>
                             {/*videos*/}
                         </div>
+                        <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
                     </Grid>
                 </Grid>
                 <Grid container style={styles.root} xs={12} spacing={3} justify="center" zeroMinWidth={0}>
@@ -699,10 +703,18 @@ const styles = {
         right:'0px',
     },
     video: {
-        paddingTop: 5, // 16:9
-        width:720,
-        height:480,
-    },
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        minWidth: '100%',
+        minHeight: '100%',
+        width: '200px',
+        height: 'auto',
+        zIndex: -100,
+        backgroundSize: 'cover',
+        overflow: 'hidden',
+
+      },
 
     button: {
         paddingBottom: 5, // 16:9
