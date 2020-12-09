@@ -595,11 +595,12 @@ class VideoRoomTest extends Component {
                     if(!remoteVideo) {
                         that.setState({hasRemoteVideo: true, numberOfRemotes: that.state.numberOfRemotes + 1});
                         
-                        let divId = that.state.numberOfRemotes >1 ? 'remote2' :'remote1' ;
+                        // let divId = that.state.numberOfRemotes >1 ? 'remote2' :'remote1' ;
                         remoteVideo = document.createElement("video");
                         remoteVideo.id = `remote-${remoteFeed.rfindex}`;
                         remoteVideo.style = styles.video;
-                        document.getElementById(divId).appendChild(remoteVideo);
+                        remoteVideo.style.maxWidth = "100%";
+                        document.getElementById("videocall").appendChild(remoteVideo);
                         remoteVideo.load();
                         remoteVideo.autoplay = true;
 
@@ -661,11 +662,13 @@ class VideoRoomTest extends Component {
                         <div id="videocall" style={{
                             display: 'grid', 
                             height: 488, 
-                            gridTemplateColumns: '1fr 1fr',
-                            }/*{flex:1, height: 488} gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))'*/
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                            padding: '20px 10px',
+                            width: "100%"                           
+                        }/*{flex:1, height: 488} gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))'*/
                             }>
-                            <div id='remote1' ></div>
-                            <div id='remote2'></div>
+                            {/* <div id='remote1'></div>
+                            <div id='remote2'></div> */}
                             {/*videos*/}
                         </div>
                         <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
