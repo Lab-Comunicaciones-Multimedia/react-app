@@ -4,6 +4,7 @@ import './App.css';
 import Header from '../Header/Header';
 import SideBar from '../SideBar/SideBar';
 import VideoBox from '../VideoBox/VideoBox';
+import VideoRoomTest from '../VideoBox/VideoRoomTest';
 import {SmileySun, PurpleFriend} from '../friendos/friendos.js';
 
 import { v1 as uuidv1 } from 'uuid';
@@ -32,8 +33,9 @@ class App extends React.Component {
         <div id="sidebar"><SideBar/></div>
         <div id="content">
           <PurpleFriend/>
-          <VideoBox/>
+          <VideoRoomTest/>
         </div>
+        <div id="footer"></div>
       </div>
       <SmileySun/>
     </div>

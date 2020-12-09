@@ -3,12 +3,14 @@ html{
   --sunmoonBackgroundPicture: url("/src/icons/sunmoon-day.svg");
   --primaryTextColor: black;
   --divBackgroundColor:rgb(247, 243, 237);
+  --videoCallDivBackgroundColor: rgb(247, 243, 237);
 }
 html.dark{
   --primaryBackgroundColor: #1d2d50;
   --sunmoonBackgroundPicture: url("/src/icons/sunmoon-night.svg");
   --primaryTextColor: #110F06;
   --divBackgroundColor:#ececec;
+  --videoCallDivBackgroundColor:#ececec;
 }
 body{
   font: Degular Demo;
@@ -24,7 +26,8 @@ body{
 .App-container{
   display: grid;
   grid-template-columns: 1fr 2fr 2fr;
-  grid-template-areas: "sidebar content content content";
+  grid-template-rows: 4fr 1fr;
+  grid-template-areas: "sidebar content content content" "footer footer footer footer";
 
 }
 #sidebar{
@@ -36,6 +39,10 @@ body{
 #content{
   /*background-color: rgb(74, 122, 124);*/
   grid-area: content;
+}
+#footer{
+  grid-area: footer;
+  height: 100px;
 }
 .App-logo {
   height: 40vmin;

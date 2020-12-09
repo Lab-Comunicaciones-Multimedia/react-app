@@ -14,6 +14,8 @@ import {VideoIcon,VideoOffIcon,AudioIcon,AudioOffIcon} from '../img/svgIcons'
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { ButtonGroup, Hidden } from '@material-ui/core';
 
+import './VideoBox.css';
+
 class VideoRoomTest extends Component {
 
     constructor(props){
@@ -654,41 +656,42 @@ class VideoRoomTest extends Component {
         //     Janus.attachMediaStream(element, streams[index]);
         // });
         return (
-            <div>
-                {/*<CssBaseline />*/}
-                <Grid container id='mainGrid' xs={12} spacing={6} justify="flex-end"  alignItems="flex-end" direction="row">
-                    <Grid item xs={12} >
+            <div style= {{position: 'relative', display: 'grid', gridTemplateRows:'2fr 1fr'}}>
+                <div id="box" className="video-box">
+                    {/*<CssBaseline />*/}
+                       
 
-                        <div id="videocall" style={{
-                            display: 'grid', 
-                            height: 488, 
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                            padding: '20px 10px',
-                            width: "100%"                           
-                        }/*{flex:1, height: 488} gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))'*/
-                            }>
-                            {/* <div id='remote1'></div>
-                            <div id='remote2'></div> */}
-                            {/*videos*/}
-                        </div>
-                        <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
-                    </Grid>
-                </Grid>
-                <Grid container style={styles.root} xs={12} spacing={3} justify="center" zeroMinWidth={0}>
-                    <Grid item xs={12}>
-                        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Button disabled={!this.state.hasVideoRoom} onClick={this.handleAudioOn} color="primary" variant="contained" aria-label="Add an alarm2">
-                                        {this.state.audioEnable?<AudioIcon></AudioIcon>:<AudioOffIcon></AudioOffIcon>}
-                            </Button>
-                            <Button disabled={!this.state.hasVideoRoom} onClick={this.handleVideoOn} color="primary" variant="contained" aria-label="Add an alarm">
-                                        {this.state.videoEnable?<VideoIcon></VideoIcon>:<VideoOffIcon></VideoOffIcon>}
-                            </Button>
-                            <Button color="primary" variant="contained" onClick={this.handleStart}>
-                                {this.state.bStartEchoTestButton?'leave':'join'}
-                            </Button>
-                        </ButtonGroup>
-                    </Grid>
-                </Grid>
+                            <div id="videocall" style={{
+                                display: 'grid', 
+                                height: '100%',
+                                width:'100%', 
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 50%))',
+                                alignContent:'center',
+                                justifyContent:'center',
+                                padding: '0px 0px',                   
+                            }/*{flex:1, height: 488} gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))'*/
+                                }>
+                                {/* <div id='remote1'></div>
+                                <div id='remote2'></div> */}
+                                {/*videos*/}
+                            </div>
+                            <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
+                        
+                    
+                </div>
+                <div style={{position: 'fixed', top: '12px', right: '20vw', left: '30vw'}}>    
+                            <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                                <Button disabled={!this.state.hasVideoRoom} onClick={this.handleAudioOn} color="primary" variant="contained" aria-label="Add an alarm2">
+                                            {this.state.audioEnable?<AudioIcon></AudioIcon>:<AudioOffIcon></AudioOffIcon>}
+                                </Button>
+                                <Button disabled={!this.state.hasVideoRoom} onClick={this.handleVideoOn} color="primary" variant="contained" aria-label="Add an alarm">
+                                            {this.state.videoEnable?<VideoIcon></VideoIcon>:<VideoOffIcon></VideoOffIcon>}
+                                </Button>
+                                <Button color="primary" variant="contained" onClick={this.handleStart}>
+                                    {this.state.bStartEchoTestButton?'leave':'join'}
+                                </Button>
+                            </ButtonGroup>
+                </div>
             </div>
         );
     }
@@ -704,6 +707,7 @@ const styles = {
         position: 'absolute',
         top: '0px',
         right:'0px',
+        /* boxShadow: '1px 1px 5px 0px rgb(179, 179, 179)', */
     },
     video: {
         position: 'absolute',
@@ -726,134 +730,6 @@ const styles = {
     selectEmpty: {
         marginTop:  2,
     },
-};
-
-const videoStyles = {
-        '0': {
-            container:{
-                height: `100%`,
-                width: `100%`,
-                position: `relative`
-            },
-            localVideo:{
-                width: `200px`,
-                height: `auto`
-            },
-            localVideoContainer:{
-                position: `absolute`,
-                top: `50px`,
-                right: `50px`
-            }
-        },
-        '1': {
-            container:{
-                height: `100%`,
-                width: `100%`,
-                position: `relative`
-            },
-            video:{
-                width: `100%`,
-            },
-            videoContainer:{
-                width: `100%`,
-                height: `100%`
-            },
-            localVideo:{
-                width: `200px`,
-                height: `auto`
-            },
-            localVideoContainer:{
-                position: `absolute`,
-                top: `50px`,
-                right: `50px`
-            }
-        },
-        '2': {
-            container:{
-                height: `100%`,
-                width: `100%`,
-                display: `flex`,
-                position: `relative`
-            },
-            video:{
-                width: `100%`,
-                height: `100%`,
-                objectFit: `cover`
-            },
-            videoContainer:{
-                width: `100%`,
-                height: `100%`
-            },
-            localVideo:{
-                width: `200px`,
-                height: `auto`
-            },
-            localVideoContainer:{
-                position: `absolute`,
-                right: `calc(50% - 100px)`
-            }
-        },
-        '3': {
-            container:{
-                display: `grid`,
-                gridTemplateColumns: `50% 50%`
-            },
-            video:{
-                width: `100%`,
-                height: `100%`,
-                objectFit: `cover`
-            },
-            localVideo:{
-                height: `100%`
-            },
-            localVideoContainer:{
-                
-            }
-        },
-        '4': {
-            container:{
-                display: `grid`,
-                gridTemplateColumns: `50% 50%`,
-                gridTemplateRows: `50% 50%`,
-                height: `100%`
-            },
-            video:{
-                width: `100%`,
-                height: `100%`,
-                objectFit: `cover`
-            },
-            localVideo:{
-                height: `100%`,
-            },
-            localVideoContainer:{
-                position: `absolute`,
-                top: `calc(50% - 80px)`,
-                left: `calc(50% + 70px)`,
-                borderRadius: `200px`,
-                overflow: `hidden`,
-                width: `160px`,
-                height: `160px`
-            }
-        },
-        '5': {
-            container:{
-                display: `grid`,
-                gridTemplateColumns: `33.3% 33.3% 33.3%`,
-                gridTemplateRows: `50% 50%`,
-                height: `100%`
-            },
-            video:{
-                width: `100%`,
-                height: `100%`,
-                objectFit: `cover`
-            },
-            localVideo:{
-                height: `100%`
-            },
-            localVideoContainer:{
-                
-            }
-        }
 };
 
 export default VideoRoomTest;

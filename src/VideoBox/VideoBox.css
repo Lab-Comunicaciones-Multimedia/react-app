@@ -1,4 +1,5 @@
 .video-box{
+    background-color: var(--videoCallDivBackgroundColor) !important;
     height: 71vh;/* 500px; */
     margin: 36px 76px 20px 0px;
     bottom: 250px;
