@@ -576,7 +576,7 @@ class ChatRoomTest extends Component {
                                 onPlay={this.enviarPaquete} 
                                 onPause={this.enviarPaquete}
                                 style={{width: "13vw", position: 'relative', top: "-50px"}}>
-                            <source src="test.mp4" type="video/mp4"/>
+                            <source src="main.mp4" type="video/mp4"/>
                         </video>
 
                     </Fragment>
