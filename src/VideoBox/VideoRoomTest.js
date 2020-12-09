@@ -93,12 +93,18 @@ class VideoRoomTest extends Component {
     }
 
     handleVideoOn(){
-        this.echotest.send({"message": { "video": !this.state.videoEnable }});
+        this.echotest.send({"message": {
+            "video": !this.state.videoEnable,
+            "request": "configure"
+        }});
         this.setState({videoEnable: !this.state.videoEnable});
     }
 
     handleAudioOn(){
-        this.echotest.send({"message": { "audio": !this.state.audioEnable }});
+        this.echotest.send({"message": {
+            "audio": !this.state.audioEnable,
+            "request": "configure"
+        }});
         this.setState({audioEnable: !this.state.audioEnable});
     }
 
