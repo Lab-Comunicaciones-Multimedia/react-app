@@ -12,6 +12,7 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import {VideoIcon,VideoOffIcon,AudioIcon,AudioOffIcon} from '../img/svgIcons'
 import NativeSelect from '@material-ui/core/NativeSelect';
+import { ButtonGroup } from '@material-ui/core';
 
 class VideoRoomTest extends Component {
 
@@ -24,6 +25,11 @@ class VideoRoomTest extends Component {
             audioEnable:true,
             bitrateValue:100,
             bStartEchoTestButton:false,
+            hasVideoRoom: false,
+            hasRemoteVideo: true,
+            numberOfRemotes: 0,
+            remotePeerIds: [],
+            remotePeerStreams: [],
         }
 
         // create a ref to store the video DOM element
@@ -102,15 +108,20 @@ class VideoRoomTest extends Component {
 
 
     handleStart(){
-        // if(this.bStartEchoTest){
-        //     clearInterval(this.bitrateTimer);
-        //     this.janus.destroy();
-        //     this.bitrateTimer=null;
-        //     this.janus=null;
-        //     this.bStartEchoTest=false;
-        //     this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
-        //     return;
-        // }
+        if(this.bStartEchoTest){
+            // clearInterval(this.bitrateTimer);
+            this.janus.destroy();
+            // this.bitrateTimer=null;
+            this.janus=null;
+            this.bStartEchoTest=false;
+            this.setState({
+                bStartEchoTestButton:!this.state.bStartEchoTestButton, 
+                hasRemoteVideo: false, 
+                numberOfRemotes: 0,
+            });
+            
+            return;
+        }
 
         this.bStartEchoTest=true;
         this.setState({bStartEchoTestButton:!this.state.bStartEchoTestButton});
@@ -141,6 +152,7 @@ class VideoRoomTest extends Component {
                             opaqueId: this.opaqueId,
                             success: function(pluginHandle) {
                                 that.echotest = pluginHandle;
+                                that.setState({hasVideoRoom: true}); //to enable audio and video buttons
                                 Janus.log("Plugin attached! (" + that.echotest.getPlugin() + ", id=" + that.echotest.getId() + ")");
                                 Janus.log("  -- This is a publisher/manager");
                                 // Prepare the username registration
@@ -257,8 +269,15 @@ class VideoRoomTest extends Component {
                                             }
                                             if(remoteFeed != null) {
                                                 Janus.debug("Feed " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ") has left the room, detaching");
+                                                that.setState({numberOfRemotes: that.state.numberOfRemotes - 1});
                                                 let remoteVideo = document.getElementById(`remote-${remoteFeed.rfindex}`);
                                                 remoteVideo.remove();
+                                                let id = `remote-${remoteFeed.rfindex}`;
+                                                that.setState({
+                                                    remotePeerIds: that.state.remotePeerIds.filter((p) => {
+                                                        return p !== id;
+                                                    }),
+                                                });
                                                 that.feeds[remoteFeed.rfindex] = null;
                                                 remoteFeed.detach();
                                             }
@@ -284,6 +303,12 @@ class VideoRoomTest extends Component {
                                                 Janus.debug("Feed " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ") has left the room, detaching");
                                                 let remoteVideo = document.getElementById(`remote-${remoteFeed.rfindex}`);
                                                 remoteVideo.remove();
+                                                let id = `remote-${remoteFeed.rfindex}`;
+                                                that.setState({
+                                                    remotePeerIds: that.state.remotePeerIds.filter((p) => {
+                                                        return p !== id;
+                                                    }),
+                                                });
                                                 that.feeds[remoteFeed.rfindex] = null;
                                                 remoteFeed.detach();
                                             }
@@ -568,12 +593,20 @@ class VideoRoomTest extends Component {
                     // var addButtons = false;
                     let remoteVideo = document.getElementById(`remote-${remoteFeed.rfindex}`)
                     if(!remoteVideo) {
+                        that.setState({hasRemoteVideo: true, numberOfRemotes: that.state.numberOfRemotes + 1});
+                        
                         remoteVideo = document.createElement("video");
                         remoteVideo.id = `remote-${remoteFeed.rfindex}`;
                         document.getElementById("videocall").appendChild(remoteVideo);
                         remoteVideo.load();
                         remoteVideo.autoplay = true;
-                        remoteVideo.style = styles.video;
+
+                        let id = `remote-${remoteFeed.rfindex}`;
+                        that.setState({
+                            remotePeerIds: that.state.remotePeerIds.concat(id), 
+                            remotePeerStreams: that.state.remotePeerStreams.concat(stream)
+                        });
+                        //remoteVideo.style = styles.video;
                     }
                     
                     Janus.attachMediaStream(remoteVideo, stream);
@@ -585,71 +618,68 @@ class VideoRoomTest extends Component {
     
                 },
                 oncleanup: function() {
-                    let remoteVideo = document.getElementById(`remote-${remoteFeed.rfindex}`);
-                    remoteVideo.remove();
+                    // let remoteVideo = document.getElementById(`remote-${remoteFeed.rfindex}`);
+                    // remoteVideo.remove();
                 }
             });
     }
+    getCustomStyles = (nParticipants) => {
+		
+		const key = String(nParticipants);
+
+		const s = styles[key];
+
+		return s || {};
+
+    }
+    // renderRemoteVideo(remoteId){
+    //     return(
+    //         <video id={remoteId} autoplay></video>
+    //     );
+    // }
 
     render() {
+        // const remotePeerIds = this.state.remotePeerIds;
+        // const streams = this.state.remotePeerStreams;
+        // console.log('REMOTEPEER IDS SSSSSSSSS'+ remotePeerIds);
+        // //const videos =[];
+        // const videos = remotePeerIds.map(peerId => {
+        //     return(<video id={peerId} autoplay/>);
+        // });
+        
+        // videos.forEach((element, index) => {
+        //     Janus.attachMediaStream(element, streams[index]);
+        // });
         return (
             <div>
                 {/*<CssBaseline />*/}
-                <Grid container xs={12} spacing={6} justify="flex-end"  alignItems="flex-end" direction="row">
-                    <Grid item xs={6} >
-                        {/*<Card key='1' style={styles.card}>*/}
-                        <div id="videocall">
-                            <video style={styles.video} ref={this.localVideo} id="localVideo" autoPlay="true"/>
-                            {/* <video style={styles.video} ref={this.remoteVideo} id="remoteVideo" autoPlay="true"/> */}
-                            {
-                                // stuff from echotest
-                                
-                                /*<CardActions style={styles.button}>
-                                <IconButton onClick={this.handleVideoOn} color="primary" aria-label="Add an alarm">
-                                    {this.state.videoEnable?<VideoIcon></VideoIcon>:<VideoOffIcon></VideoOffIcon>}
-                                </IconButton>
-                                <IconButton onClick={this.handleAudioOn} color="secondary" aria-label="Add an alarm2">
-                                    {this.state.audioEnable?<AudioIcon></AudioIcon>:<AudioOffIcon></AudioOffIcon>}
-                                </IconButton>
-                                <NativeSelect
-                                    value={this.state.bitrateValue}
-                                    onChange={this.handleSelectChange('bitrateValue')}
-                                    name="bitrate"
-                                    style={styles.selectEmpty}
-                                >
-                                    <option value={0}>No limit</option>
-                                    <option value={128}>Cap to 128kbit</option>
-                                    <option value={256}>Cap to 256kbit</option>
-                                    <option value={512}>Cap to 512kbit</option>
-                                    <option value={1025}>Cap to 1mbit</option>
-                                    <option value={1500}>Cap to 1.5mbit</option>
-                                    <option value={2000}>Cap to 2mbit</option>
-                                </NativeSelect>
-                            </CardActions>*/}
-                        {/*</Card>*/}
+                <Grid container id='mainGrid' xs={12} spacing={6} justify="flex-end"  alignItems="flex-end" direction="row">
+                    <Grid item xs={12} >
+
+                        <div id="videocall" style={{
+                            display: 'grid', 
+                            height: 488, 
+                            gridTemplateColumns: 'repeat('+ this.state.numberOfRemotes +', minmax(auto-fill,1fr))',
+                            }/*{flex:1, height: 488}*/
+                            }>
+                            <video style={styles.local} ref={this.localVideo} id="localVideo" autoPlay="true"/>
+                            {/*videos*/}
                         </div>
                     </Grid>
-                    {/*<Grid item xs={6}>
-                        <Card key='2' style={styles.card}>
-                            <video style={styles.video} ref={this.remoteVideo} id="remoteVideo" autoPlay="true"/>
-                            <CardActions style={styles.button}>
-                                <IconButton onClick={this.handleVideoOn} color="primary" aria-label="Add an alarm">
-                                    {this.state.videoEnable?<VideoIcon></VideoIcon>:<VideoOffIcon></VideoOffIcon>}
-                                </IconButton>
-                                <IconButton onClick={this.handleAudioOn} color="secondary" aria-label="Add an alarm2">
-                                    {this.state.audioEnable?<AudioIcon></AudioIcon>:<AudioOffIcon></AudioOffIcon>}
-                                </IconButton>
-                                <label>{this.state.WidthAndHeight}</label>
-                                <label>{this.state.bitrateNow}</label>
-                            </CardActions>
-                        </Card>
-                    </Grid>*/}
                 </Grid>
                 <Grid container style={styles.root} xs={12} spacing={3} justify="center" zeroMinWidth={0}>
                     <Grid item xs={12}>
-                        <Button color="primary" variant="contained" onClick={this.handleStart}>
-                            {this.state.bStartEchoTestButton?'stop':'start'}
-                        </Button>
+                        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                            <Button disabled={!this.state.hasVideoRoom} onClick={this.handleAudioOn} color="primary" variant="contained" aria-label="Add an alarm2">
+                                        {this.state.audioEnable?<AudioIcon></AudioIcon>:<AudioOffIcon></AudioOffIcon>}
+                            </Button>
+                            <Button disabled={!this.state.hasVideoRoom} onClick={this.handleVideoOn} color="primary" variant="contained" aria-label="Add an alarm">
+                                        {this.state.videoEnable?<VideoIcon></VideoIcon>:<VideoOffIcon></VideoOffIcon>}
+                            </Button>
+                            <Button color="primary" variant="contained" onClick={this.handleStart}>
+                                {this.state.bStartEchoTestButton?'leave':'join'}
+                            </Button>
+                        </ButtonGroup>
                     </Grid>
                 </Grid>
             </div>
@@ -662,13 +692,15 @@ const styles = {
         flexGrow: 1,
         textAlign: 'center',
     },
-    card: {
-        maxWidth: 640,
-        
+    local:{
+        width: '200px',
+        position: 'absolute',
+        top: '0px',
+        right:'0px',
     },
     video: {
         paddingTop: 5, // 16:9
-        width:480,
+        width:720,
         height:480,
     },
 
@@ -679,6 +711,134 @@ const styles = {
     selectEmpty: {
         marginTop:  2,
     },
+};
+
+const videoStyles = {
+        '0': {
+            container:{
+                height: `100%`,
+                width: `100%`,
+                position: `relative`
+            },
+            localVideo:{
+                width: `200px`,
+                height: `auto`
+            },
+            localVideoContainer:{
+                position: `absolute`,
+                top: `50px`,
+                right: `50px`
+            }
+        },
+        '1': {
+            container:{
+                height: `100%`,
+                width: `100%`,
+                position: `relative`
+            },
+            video:{
+                width: `100%`,
+            },
+            videoContainer:{
+                width: `100%`,
+                height: `100%`
+            },
+            localVideo:{
+                width: `200px`,
+                height: `auto`
+            },
+            localVideoContainer:{
+                position: `absolute`,
+                top: `50px`,
+                right: `50px`
+            }
+        },
+        '2': {
+            container:{
+                height: `100%`,
+                width: `100%`,
+                display: `flex`,
+                position: `relative`
+            },
+            video:{
+                width: `100%`,
+                height: `100%`,
+                objectFit: `cover`
+            },
+            videoContainer:{
+                width: `100%`,
+                height: `100%`
+            },
+            localVideo:{
+                width: `200px`,
+                height: `auto`
+            },
+            localVideoContainer:{
+                position: `absolute`,
+                right: `calc(50% - 100px)`
+            }
+        },
+        '3': {
+            container:{
+                display: `grid`,
+                gridTemplateColumns: `50% 50%`
+            },
+            video:{
+                width: `100%`,
+                height: `100%`,
+                objectFit: `cover`
+            },
+            localVideo:{
+                height: `100%`
+            },
+            localVideoContainer:{
+                
+            }
+        },
+        '4': {
+            container:{
+                display: `grid`,
+                gridTemplateColumns: `50% 50%`,
+                gridTemplateRows: `50% 50%`,
+                height: `100%`
+            },
+            video:{
+                width: `100%`,
+                height: `100%`,
+                objectFit: `cover`
+            },
+            localVideo:{
+                height: `100%`,
+            },
+            localVideoContainer:{
+                position: `absolute`,
+                top: `calc(50% - 80px)`,
+                left: `calc(50% + 70px)`,
+                borderRadius: `200px`,
+                overflow: `hidden`,
+                width: `160px`,
+                height: `160px`
+            }
+        },
+        '5': {
+            container:{
+                display: `grid`,
+                gridTemplateColumns: `33.3% 33.3% 33.3%`,
+                gridTemplateRows: `50% 50%`,
+                height: `100%`
+            },
+            video:{
+                width: `100%`,
+                height: `100%`,
+                objectFit: `cover`
+            },
+            localVideo:{
+                height: `100%`
+            },
+            localVideoContainer:{
+                
+            }
+        }
 };
 
 export default VideoRoomTest;

@@ -17,7 +17,7 @@ class VideoBox extends React.Component{
       return (
           <div id="box" className="video-box">
           {/*<EchoTest/>*/}
-          <VideoRoomTest/>
+            <VideoRoomTest/>
           </div>
       );
     };
