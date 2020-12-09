@@ -12,6 +12,7 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import {VideoIcon,VideoOffIcon,AudioIcon,AudioOffIcon} from '../img/svgIcons'
 import NativeSelect from '@material-ui/core/NativeSelect';
+import { List, ListItem, ListItemText, TextField } from '@material-ui/core';
 
 class ChatRoomTest extends Component {
 
@@ -25,7 +26,8 @@ class ChatRoomTest extends Component {
             bitrateValue:100,
             bStartEchoTestButton:false,
             hasTextRoom: false,
-            hasSharedVideo: false
+            hasSharedVideo: false,
+            messages: []
         }
 
         // create a ref to store the video DOM element
@@ -61,12 +63,17 @@ class ChatRoomTest extends Component {
         this.handleStart=this.handleStart.bind(this);
         this.sendMessage=this.sendMessage.bind(this);
         this.enviarPaquete=this.enviarPaquete.bind(this);
+        this.updateScroll=this.updateScroll.bind(this);
+
         // this.initSharedVideo=this.initSharedVideo.bind(this);
 
         this.sharedVideo = null;
     }
 
     componentDidMount() {
+        this.setState({
+            messages: []
+        })
         // Initialize Janus
         Janus.init({
             debug: "all", 
@@ -226,11 +233,24 @@ class ChatRoomTest extends Component {
                                     let content = receivedData["content"];
 
                                     if(type === "message") {
+                                        let message = {
+                                            sendingUser: sendingUser,
+                                            content: content
+                                        }
                                         // MESSAGE RECEIVED
-                                        let chat = document.getElementById("chat");
-                                        let chatMessage = document.createElement("p");
-                                        chatMessage.innerHTML = `${sendingUser}: ${content}`;
-                                        chat.appendChild(chatMessage);
+                                        let messages = that.state.messages.map(l => Object.assign({}, l));
+                                        messages.push(message);
+                                        console.log(`BEFORE: ${messages}`);
+                                        console.log(JSON.stringify(message));
+                                        that.setState({
+                                            messages: messages
+                                        });
+                                        that.updateScroll();
+                                        console.log(`AFTER: ${that.state.messages}`);
+                                        // let chat = document.getElementById("chat");
+                                        // let chatMessage = document.createElement("p");
+                                        // chatMessage.innerHTML = `${sendingUser}: ${content}`;
+                                        // chat.appendChild(chatMessage);
                                     } else if(type === "video") {
                                         // VIDEO INFO RECEIVED
                                         let url = content["url"];
@@ -409,6 +429,8 @@ class ChatRoomTest extends Component {
                     console.log("MESSAGE SENT", message);
                 }
             });
+            
+            inputBox.value = null;
         }
     }
 
@@ -523,19 +545,42 @@ class ChatRoomTest extends Component {
 		this.updateTime(paquete.time, paquete.isPlaying);
     }
 
+    updateScroll(){
+        var element = document.getElementById("chat");
+        element.scrollTop = element.scrollHeight;
+    }
+
     render() {
+        console.log("RENDER");
+        console.log(this.state.messages);
+        
         return (
             <div>
                 {this.state.hasTextRoom ? 
-                    <Fragment>
-                        <input type="text" id="messageBox" style={{width: "100%"}}></input>
-                        <button onClick={this.sendMessage}>Send</button>
-                        <div id="chat" style={{width: "100%", height: "100%", "overflow-y": "scroll"}}></div>
+                    <Fragment style={{overflow: "hidden"}}>
+                        {/* <input type="text" id="messageBox" style={{width: "100%"}}></input> */}
+                        <TextField id="messageBox" variant="outlined" style={{width: "13vw"}}/>
+                        {/* <button onClick={this.sendMessage}>Send</button> */}
+                        <Button variant="contained" onClick={this.sendMessage} color="primary">Send</Button>
+                        <List id="chat" style={{overflow: 'auto',width: "13vw", height: "450px"}}>
+                            {this.state.messages.map((msg) => {
+                                return (
+                                    <ListItem>
+                                        <ListItemText primary={msg.content} secondary={msg.sendingUser}/>
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
                         <video width="320" height="240" controls id="sharedVideo" onSeeked={this.enviarPaquete} onPlay={this.enviarPaquete} onPause={this.enviarPaquete}>
                             <source src="test.mp4" type="video/mp4"/>
                         </video>
+
                     </Fragment>
-                 : <button onClick={this.handleStart}>Start</button>}
+                    
+                 : 
+                //  <button onClick={this.handleStart}>Start</button>
+                <Button variant="contained" onClick={this.handleStart} color="primary">Start</Button>
+                }
             </div>
         );
     }
