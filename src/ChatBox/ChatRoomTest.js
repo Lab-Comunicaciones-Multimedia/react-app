@@ -562,7 +562,7 @@ class ChatRoomTest extends Component {
                         <TextField id="messageBox" variant="outlined" style={{width: "13vw"}}/>
                         {/* <button onClick={this.sendMessage}>Send</button> */}
                         <Button variant="contained" onClick={this.sendMessage} color="primary">Send</Button>
-                        <List id="chat" style={{overflow: 'auto',width: "13vw", height: "450px"}}>
+                        <List id="chat" style={{overflow: 'auto',width: "13vw", height: "270px"}}>
                             {this.state.messages.map((msg) => {
                                 return (
                                     <ListItem>
@@ -571,7 +571,11 @@ class ChatRoomTest extends Component {
                                 );
                             })}
                         </List>
-                        <video width="320" height="240" controls id="sharedVideo" onSeeked={this.enviarPaquete} onPlay={this.enviarPaquete} onPause={this.enviarPaquete}>
+                        <video width="320" height="240" controls id="sharedVideo" 
+                                onSeeked={this.enviarPaquete} 
+                                onPlay={this.enviarPaquete} 
+                                onPause={this.enviarPaquete}
+                                style={{width: "13vw", position: 'relative', top: "-50px"}}>
                             <source src="test.mp4" type="video/mp4"/>
                         </video>
 
