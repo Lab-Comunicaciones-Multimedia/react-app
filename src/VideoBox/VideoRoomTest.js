@@ -53,7 +53,7 @@ class VideoRoomTest extends Component {
         this.bitrateNow=null;
         this.WidthAndHeight="";
         this.bStartEchoTest=false;
-        this.reconnectTimer=null;//断线重连机制
+        this.reconnectTimer=null;
 
         this.feeds = [];
 

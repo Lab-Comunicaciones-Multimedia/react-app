@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Route } from "react-router";
 import './index.css';
 import App from './App/App';
+import Home from './Home/Home'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    {/* <Home/> */}
   </React.StrictMode>,
   document.getElementById('root')
 );

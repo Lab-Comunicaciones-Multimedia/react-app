@@ -1,0 +1,19 @@
+#weare{
+    background-image: url('../icons/who-are-we.svg');
+    /* left:0px; */
+    bottom: 0px;
+    width: 646px;
+    height: 316px;
+    position: absolute;
+    margin:'auto';
+    z-index: -100;
+  }
+
+  @media only screen and (max-width: 600px){
+    #weare{
+        background-size: cover;
+        margin-top: calc(-0.2 * calc(10vh + 48px));
+        margin-right: calc(-1 * 24px);
+        right: 0;
+    }
+    }
