@@ -270,7 +270,12 @@ class ChatRoomTest extends Component {
                                             })
                                         }
                                     }
-                                }
+                                } /* else if(what === "join"){
+                                    let username = json["username"];
+                                    if(username !== that.myid) {
+                                        that.enviarPaquete();
+                                    }
+                                } */
 
                                 //~ $('#datarecv').val(data);
                                 // var json = JSON.parse(data);

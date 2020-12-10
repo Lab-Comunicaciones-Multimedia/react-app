@@ -31,7 +31,7 @@ class Home extends React.Component{
                         </div>
                     </div>
                     <Switch>
-                        <Route path="/friendo">
+                        <Route exact path="/friendo">
                             <App/>
                         </Route>
                     </Switch>
